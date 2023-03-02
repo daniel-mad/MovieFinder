@@ -30,7 +30,7 @@ public class MovieService : IMovieService
 
     public async Task<IEnumerable<MovieDto>> GetMoviesByName(string expression)
     {
-        var moviesSearchData = await _client.GetFromJsonAsync<SearchData>($"/API/SearchMovie/{_apiKey}/{expression}");
+        var moviesSearchData = await _client.GetFromJsonAsync<SearchData>($"/API/AdvancedSearch/{_apiKey}?title={expression}");
         var moviesDto = _mapper.Map<IEnumerable<MovieDto>>(moviesSearchData.Results);
         return moviesDto;
     }
