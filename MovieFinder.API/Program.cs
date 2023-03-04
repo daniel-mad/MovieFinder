@@ -1,3 +1,4 @@
+using MovieFinder.API.Extensions;
 using MovieFinder.API.Middleware;
 using MovieFinder.Application;
 
@@ -5,7 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.ConfigureApplication();
-
+builder.Services.ConfigureCors();
 builder.Services.AddResponseCaching();
 
 builder.Services.AddControllers();
@@ -23,6 +24,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors("CorsPolicy");
 app.UseResponseCaching();
 
 app.UseHttpsRedirection();
