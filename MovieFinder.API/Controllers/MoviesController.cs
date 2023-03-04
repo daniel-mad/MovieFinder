@@ -15,6 +15,7 @@ public class MoviesController : ControllerBase
         _service = service;
     }
     [HttpGet("PopularMovies")]
+    [ResponseCache(Duration = 60 * 60 * 6)]
     public async Task<ActionResult<IEnumerable<MovieDto>>> GetMostPopularMovies()
     {
         var movies = await _service.GetMostPopularMovies();
