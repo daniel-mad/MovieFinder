@@ -28,7 +28,7 @@ public class MoviesController : ControllerBase
         var movies = await _service.GetMoviesByName(expression);
         return Ok(movies);
     }
-
+    [ResponseCache(Duration = 60 * 60 * 6)]
     [HttpGet("{id}")]
     public async Task<ActionResult<MovieFullDetailsDto>> GetMovie(string id)
     {
