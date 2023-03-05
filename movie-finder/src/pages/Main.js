@@ -1,23 +1,35 @@
-import { CircularProgress, Container, Modal } from "@mui/material";
-import { Box } from "@mui/system";
-import React, { useEffect, useState } from "react";
-import Footer from "../components/Footer";
-import MovieFullDetails from "../components/MovieFullDetails";
-import MovieList from "../components/MovieList";
+import { CircularProgress, Container, Modal } from '@mui/material';
+import { Box } from '@mui/system';
+import React, { useEffect, useState } from 'react';
+import Footer from '../components/Footer';
+import MovieFullDetails from '../components/MovieFullDetails';
+import MovieList from '../components/MovieList';
 
-import Nav from "../components/Nav";
-import Paging from "../components/Paging";
+import Nav from '../components/Nav';
+import Paging from '../components/Paging';
 
 import {
   getMostPopularMovies,
   getMovieById,
   getMovieByName,
-} from "../services/movieService";
+} from '../services/movieService';
+
+const styles = {
+  message: {
+    width: '90vw',
+    height: '90vh',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    p: 4,
+    color: '#fff',
+  },
+};
 
 const Main = () => {
   const [movies, setMovies] = useState([]);
   const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   const [selectedMovie, setSelectedMovie] = useState(null);
@@ -36,19 +48,21 @@ const Main = () => {
       const data = await getMostPopularMovies();
       setMovies(data);
     } catch (error) {
+      setLoading(false);
       setError(error.message);
     } finally {
       setLoading(false);
     }
   };
 
-  const handleOpen = async (movie) => {
+  const handleOpen = async movie => {
     try {
       setLoading(true);
       const data = await getMovieById(movie.id);
       setSelectedMovie(data);
       setOpen(true);
     } catch (error) {
+      setLoading(false);
       setError(error.message);
     } finally {
       setLoading(false);
@@ -63,7 +77,7 @@ const Main = () => {
     setPage(value);
   };
 
-  const handleSearch = async (search) => {
+  const handleSearch = async search => {
     try {
       setLoading(true);
       const data = await getMovieByName(search);
@@ -79,13 +93,23 @@ const Main = () => {
   return (
     <>
       <Nav handleSearch={handleSearch} getMostPopular={getMostPopular} />
+      {error && (
+        <Box sx={styles.message}>
+          Something went wrong..
+          <br />
+          <br />
+          Please check your internet connection
+          <br />
+          and try again
+        </Box>
+      )}
       {loading ? (
         <Box
           sx={{
-            height: "100vh",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            height: '100vh',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
           }}
         >
           <CircularProgress />
