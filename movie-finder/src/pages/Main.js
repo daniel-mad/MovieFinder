@@ -130,7 +130,7 @@ const Main = () => {
             page={page}
             pageSize={pageSize}
             onChange={onPageChange}
-            color="secondary"
+
           />
 
           <Modal open={open} onClose={handleClose}>
