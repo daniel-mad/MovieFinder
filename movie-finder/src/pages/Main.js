@@ -13,6 +13,7 @@ import {
   getMovieById,
   getMovieByName,
 } from '../services/movieService';
+import { connectionErrorMassage, notFoundErrorMassage } from '../utils/massages';
 
 const styles = {
   message: {
@@ -42,14 +43,21 @@ const Main = () => {
     (async () => await getMostPopular())();
   }, []);
 
+  const reset = () => {
+    setLoading(true)
+    setError(null)
+    setPage(1)
+    setMovies([])
+  }
+
   const getMostPopular = async () => {
     try {
-      setLoading(true);
+      reset()
       const data = await getMostPopularMovies();
       setMovies(data);
     } catch (error) {
       setLoading(false);
-      setError(error.message);
+      setError(connectionErrorMassage);
     } finally {
       setLoading(false);
     }
@@ -57,13 +65,14 @@ const Main = () => {
 
   const handleOpen = async movie => {
     try {
-      setLoading(true);
+      setLoading(true)
       const data = await getMovieById(movie.id);
+
       setSelectedMovie(data);
       setOpen(true);
     } catch (error) {
       setLoading(false);
-      setError(error.message);
+      setError(connectionErrorMassage);
     } finally {
       setLoading(false);
     }
@@ -79,12 +88,13 @@ const Main = () => {
 
   const handleSearch = async search => {
     try {
-      setLoading(true);
+      reset()
       const data = await getMovieByName(search);
-
+      if (data.length === 0)
+        setError(notFoundErrorMassage)
       setMovies(data);
     } catch (error) {
-      setError(error.message);
+      setError(connectionErrorMassage);
     } finally {
       setLoading(false);
     }
@@ -95,12 +105,7 @@ const Main = () => {
       <Nav handleSearch={handleSearch} getMostPopular={getMostPopular} />
       {error && (
         <Box sx={styles.message}>
-          Something went wrong..
-          <br />
-          <br />
-          Please check your internet connection
-          <br />
-          and try again
+          {error}
         </Box>
       )}
       {loading ? (
@@ -125,6 +130,7 @@ const Main = () => {
             page={page}
             pageSize={pageSize}
             onChange={onPageChange}
+            color="secondary"
           />
 
           <Modal open={open} onClose={handleClose}>
